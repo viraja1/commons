@@ -81,13 +81,16 @@ export default class Channel extends PureComponent<ChannelProps, ChannelState> {
         }
     }
 
-    private handlePageClick = async (data: { selected: number }) => {
+    private onPageClick = async (data: { selected: number }) => {
         // react-pagination starts counting at 0, we start at 1
         const toPage = data.selected + 1
 
         this.props.history.push({ search: `?page=${toPage}` })
 
-        await this.setState({ currentPage: toPage, isLoading: true })
+        this.setState({
+            currentPage: toPage,
+            isLoading: true
+        })
         await this.getChannelAssets()
     }
 
@@ -119,7 +122,7 @@ export default class Channel extends PureComponent<ChannelProps, ChannelState> {
                     <Pagination
                         totalPages={totalPages}
                         currentPage={currentPage}
-                        handlePageClick={this.handlePageClick}
+                        handlePageClick={this.onPageClick}
                     />
                 </Content>
             </Route>
