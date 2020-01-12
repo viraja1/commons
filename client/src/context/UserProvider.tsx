@@ -7,6 +7,7 @@ import { nodeUri } from '../config'
 import MarketProvider from './MarketProvider'
 import { MetamaskProvider } from './MetamaskProvider'
 import { BurnerWalletProvider } from './BurnerWalletProvider'
+import Torus from '@toruslabs/torus-embed'
 
 const POLL_ACCOUNTS = 1000 // every 1s
 const POLL_NETWORK = POLL_ACCOUNTS * 60 // every 1 min
@@ -15,6 +16,7 @@ const DEFAULT_WEB3 = new Web3(new Web3.providers.HttpProvider(nodeUri)) // defau
 interface UserProviderState {
     isLogged: boolean
     isBurner: boolean
+    isTorus: boolean
     isWeb3Capable: boolean
     isLoading: boolean
     account: string
@@ -27,6 +29,7 @@ interface UserProviderState {
     ocean: Ocean
     requestFromFaucet(account: string): Promise<FaucetResponse>
     loginMetamask(): Promise<any>
+    loginTorus(): Promise<any>
     loginBurnerWallet(): Promise<any>
     logoutBurnerWallet(): Promise<any>
     message: string
@@ -41,6 +44,35 @@ export default class UserProvider extends PureComponent<{}, UserProviderState> {
             {
                 isLogged: true,
                 isBurner: false,
+                isTorus: false,
+                web3
+            },
+            () => {
+                this.loadOcean()
+            }
+        )
+    }
+
+    private loginTorus = async () => {
+        let torus = new Torus({buttonPosition: "top-right"});
+        await torus.init({
+            buildEnv: "production", // default: production
+            enableLogging: false, // default: false
+            network: {
+                host: "https://pacific.oceanprotocol.com",
+                chainId: 846353
+            },
+            showTorusButton: false // default: true,
+        });
+        await torus.login({});
+        localStorage.setItem('logType', 'Torus')
+        // @ts-ignore
+        const web3 = new Web3(torus.provider);
+        this.setState(
+            {
+                isLogged: true,
+                isBurner: false,
+                isTorus: true,
                 web3
             },
             () => {
@@ -57,6 +89,7 @@ export default class UserProvider extends PureComponent<{}, UserProviderState> {
             {
                 isLogged: true,
                 isBurner: true,
+                isTorus: false,
                 web3
             },
             () => {
@@ -73,6 +106,7 @@ export default class UserProvider extends PureComponent<{}, UserProviderState> {
     public state = {
         isLogged: false,
         isBurner: false,
+        isTorus: false,
         isWeb3Capable: Boolean(window.web3 || window.ethereum),
         isLoading: true,
         balance: {
@@ -85,6 +119,7 @@ export default class UserProvider extends PureComponent<{}, UserProviderState> {
         ocean: {} as any,
         requestFromFaucet: () => requestFromFaucet(''),
         loginMetamask: () => this.loginMetamask(),
+        loginTorus: () => this.loginTorus(),
         loginBurnerWallet: () => this.loginBurnerWallet(),
         logoutBurnerWallet: () => this.logoutBurnerWallet(),
         message: 'Connecting to Ocean...'
@@ -162,6 +197,9 @@ export default class UserProvider extends PureComponent<{}, UserProviderState> {
                 break
             case 'BurnerWallet':
                 this.loginBurnerWallet()
+                break
+            case 'Torus':
+                this.loginTorus()
                 break
             default:
                 this.loginBurnerWallet()

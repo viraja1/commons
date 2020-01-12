@@ -11,6 +11,11 @@
       "title": "MetaMask",
       "icon": "🦊",
       "description": "Most secure experience attaching everything you do in Commons to an account you control. But you need to setup MetaMask first."
+    },
+    {
+      "title": "Torus",
+      "icon": "\uD83C\uDDF9",
+      "description": "Torus allows users to log in with their Google, Facebook, Reddit, Twitch, or Discord accounts in a single step to start interacting with DApps."
     }
   ]
 }

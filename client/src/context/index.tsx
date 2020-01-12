@@ -22,6 +22,9 @@ export const User = React.createContext({
     loginBurnerWallet: () => {
         /* empty */
     },
+    loginTorus: () => {
+        /* empty */
+    },
     message: ''
 })
 

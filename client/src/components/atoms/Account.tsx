@@ -24,7 +24,7 @@ export default class Account extends PureComponent<
     }
 
     public render() {
-        const { account, isBurner, loginMetamask, isWeb3Capable } = this.context
+        const { account, isBurner, loginMetamask, isWeb3Capable, isTorus } = this.context
         const { isAccountInfoOpen } = this.state
         const seedphrase = localStorage.getItem('seedphrase') as string
         const blockies = account && toDataUrl(account)
@@ -70,9 +70,10 @@ export default class Account extends PureComponent<
                             />{' '}
                             Burner Wallet
                         </button>
-                    ) : (
-                        'MetaMask'
-                    )}
+                    )
+                    : isTorus ? ('Torus')
+                    : ('MetaMask')
+                    }
                     {isWeb3Capable && <WalletSelector />}
                 </div>
 

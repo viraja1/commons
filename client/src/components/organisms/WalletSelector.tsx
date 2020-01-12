@@ -31,6 +31,12 @@ export default class WalletSelector extends PureComponent<
         this.handleToggleModal()
     }
 
+    private loginTorus = () => {
+        this.context.loginTorus()
+        this.context.logoutBurnerWallet()
+        this.handleToggleModal()
+    }
+
     private WalletButton = ({
         title,
         description,
@@ -42,14 +48,15 @@ export default class WalletSelector extends PureComponent<
     }) => {
         const active =
             (title === 'Burner Wallet' && this.context.isBurner) ||
-            (title === 'MetaMask' && !this.context.isBurner)
-
+            (title === 'MetaMask' && !this.context.isBurner && !this.context.isTorus) ||
+            (title === 'Torus' && !this.context.isBurner && this.context.isTorus)
         return (
             <button
                 className={active ? styles.buttonActive : styles.button}
                 onClick={
                     title === 'MetaMask'
                         ? this.loginMetamask
+                        : title === 'Torus' ? this.loginTorus
                         : this.loginBurnerWallet
                 }
             >
