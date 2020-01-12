@@ -74,7 +74,7 @@ export default class Account extends PureComponent<
                     : isTorus ? ('Torus')
                     : ('MetaMask')
                     }
-                    {isWeb3Capable && <WalletSelector />}
+                    <WalletSelector isWeb3Capable={isWeb3Capable}/>
                 </div>
 
                 {isBurner && isAccountInfoOpen && (

@@ -6,8 +6,8 @@ import Button from '../atoms/Button'
 import content from '../../data/wallets.json'
 
 export default class WalletSelector extends PureComponent<
-    {},
-    { isModalOpen: boolean }
+    { isWeb3Capable: boolean},
+    { isModalOpen: boolean}
 > {
     public static contextType = User
 
@@ -100,14 +100,17 @@ export default class WalletSelector extends PureComponent<
                     toggleModal={this.handleToggleModal}
                 >
                     <div className={styles.info}>
-                        {content.buttons.map(({ title, description, icon }) => (
-                            <this.WalletButton
-                                key={title}
-                                title={title}
-                                icon={icon}
-                                description={description}
-                            />
-                        ))}
+
+                        {content.buttons.map(({ title, description, icon }) => {
+                            if (this.props.isWeb3Capable || (!this.props.isWeb3Capable && title !== "MetaMask")) {
+                                return <this.WalletButton
+                                    key={title}
+                                    title={title}
+                                    icon={icon}
+                                    description={description}
+                                />
+                            }
+                        })}
                     </div>
                 </Modal>
             </>
